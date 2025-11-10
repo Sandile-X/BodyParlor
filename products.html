@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Collection - Body Parlor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Additional Styles for Products Page */
+        .products-hero {
+            position: relative;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            overflow: hidden;
+        }
+
+        .products-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+        }
+
+        .products-hero-content {
+            text-align: center;
+            z-index: 2;
+            padding: 0 2rem;
+        }
+
+        .products-hero h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 6vw, 5rem);
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+        }
+
+        .filter-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition-base);
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--secondary);
+            border-color: var(--primary);
+        }
+
+        .sort-select {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-weight: 500;
+            min-width: 200px;
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .products-full-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .product-colors {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .color-swatch {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition-base);
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.2);
+            border-color: var(--primary);
+        }
+
+        .product-sizes {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .size-btn {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-base);
+            font-size: 0.85rem;
+        }
+
+        .size-btn:hover {
+            background: var(--primary);
+            color: var(--secondary);
+            border-color: var(--primary);
+        }
+
+        .load-more {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .results-count {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                justify-content: center;
+            }
+
+            .products-full-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-gem"></i>
+                <a href="index.html"><span>Body Parlor</span></a>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html#home" class="nav-link">Home</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="products.html" class="nav-link active">Products</a></li>
+                <li><a href="index.html#gallery" class="nav-link">Gallery</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+                <li><a href="#" class="nav-link cart-icon"><i class="fas fa-shopping-bag"></i><span class="cart-count">0</span></a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Products Hero -->
+    <section class="products-hero">
+        <div class="products-hero-content">
+            <h1>Our Collection</h1>
+            <p style="color: var(--text-secondary); font-size: 1.2rem; max-width: 600px; margin: 0 auto;">
+                Discover bodysuits that celebrate your unique style
+            </p>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a>
+                <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i>
+                <span>Products</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="filter-group">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="casual">Casual</button>
+            <button class="filter-btn" data-filter="evening">Evening</button>
+            <button class="filter-btn" data-filter="luxury">Luxury</button>
+            <button class="filter-btn" data-filter="sport">Sport</button>
+        </div>
+        <select class="sort-select" id="sortSelect">
+            <option value="featured">Featured</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="newest">Newest</option>
+            <option value="popular">Most Popular</option>
+        </select>
+    </section>
+
+    <div class="results-count">
+        <p>Showing <strong id="resultsCount">24</strong> bodysuits</p>
+    </div>
+
+    <!-- Full Products Grid -->
+    <section class="products-full-grid" id="productsGrid">
+        <!-- Product 1 -->
+        <div class="product-card" data-category="evening" data-price="1299">
+            <div class="product-image">
+                <i class="fas fa-tshirt product-icon"></i>
+                <div class="product-overlay">
+                    <button class="quick-view"><i class="fas fa-eye"></i> Quick View</button>
+                    <button class="add-to-cart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+                <span class="product-badge new">New</span>
+            </div>
+            <div class="product-info">
+                <h3>Noir Elegance</h3>
+                <p>Classic black bodysuit with sculptured neckline</p>
+                <div class="product-colors">
+                    <span class="color-swatch" style="background: #000000;"></span>
+                    <span class="color-swatch" style="background: #1a1a1a;"></span>
+                    <span class="color-swatch" style="background: #2a2a2a;"></span>
+                </div>
+                <div class="product-sizes">
+                    <button class="size-btn">XS</button>
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                    <button class="size-btn">XL</button>
+                </div>
+                <div class="product-price">
+                    <span class="price">R1,299</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card" data-category="luxury" data-price="129.99">
+            <div class="product-image">
+                <i class="fas fa-vest product-icon"></i>
+                <div class="product-overlay">
+                    <button class="quick-view"><i class="fas fa-eye"></i> Quick View</button>
+                    <button class="add-to-cart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+                <span class="product-badge bestseller">Bestseller</span>
+            </div>
+            <div class="product-info">
+                <h3>Velvet Dreams</h3>
+                <p>Luxe velvet bodysuit with pearl detailing</p>
+                <div class="product-colors">
+                    <span class="color-swatch" style="background: #8B0000;"></span>
+                    <span class="color-swatch" style="background: #2F4F4F;"></span>
+                    <span class="color-swatch" style="background: #4B0082;"></span>
+                </div>
+                <div class="product-sizes">
+                    <button class="size-btn">XS</button>
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                    <button class="size-btn">XL</button>
+                </div>
+                <div class="product-price">
+                    <span class="price">R1,899</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 3 -->
+        <div class="product-card" data-category="evening" data-price="99.99">
+            <div class="product-image">
+                <i class="fas fa-user-tie product-icon"></i>
+                <div class="product-overlay">
+                    <button class="quick-view"><i class="fas fa-eye"></i> Quick View</button>
+                    <button class="add-to-cart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3>Satin Mystique</h3>
+                <p>Silky satin bodysuit with plunge back</p>
+                <div class="product-colors">
+                    <span class="color-swatch" style="background: #C0C0C0;"></span>
+                    <span class="color-swatch" style="background: #FFD700;"></span>
+                    <span class="color-swatch" style="background: #000000;"></span>
+                </div>
+                <div class="product-sizes">
+                    <button class="size-btn">XS</button>
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                </div>
+                <div class="product-price">
+                    <span class="price">R1,449</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 4 -->
+        <div class="product-card" data-category="luxury" data-price="109.99">
+            <div class="product-image">
+                <i class="fas fa-tshirt product-icon"></i>
+                <div class="product-overlay">
+                    <button class="quick-view"><i class="fas fa-eye"></i> Quick View</button>
+                    <button class="add-to-cart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+                <span class="product-badge limited">Limited</span>
+            </div>
+            <div class="product-info">
+                <h3>Lace Reverie</h3>
+                <p>Delicate lace bodysuit with mesh panels</p>
+                <div class="product-colors">
+                    <span class="color-swatch" style="background: #FFFFFF; border-color: #d4af37;"></span>
+                    <span class="color-swatch" style="background: #FFE4E1;"></span>
+                    <span class="color-swatch" style="background: #000000;"></span>
+                </div>
+                <div class="product-sizes">
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                </div>
+                <div class="product-price">
+                    <span class="price">R1,599</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 5 -->
+        <div class="product-card" data-category="evening" data-price="139.99">
+            <div class="product-image">
+                <i class="fas fa-user-tie product-icon"></i>
+                <div class="product-overlay">
+                    <button class="quick-view"><i class="fas fa-eye"></i> Quick View</button>
+                    <button class="add-to-cart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3>Shimmer Luxe</h3>
+                <p>Metallic bodysuit with halter neckline</p>
+                <div class="product-colors">
+                    <span class="color-swatch" style="background: linear-gradient(135deg, #FFD700, #FFA500);"></span>
+                    <span class="color-swatch" style="background: linear-gradient(135deg, #C0C0C0, #808080);"></span>
+                    <span class="color-swatch" style="background: linear-gradient(135deg, #CD7F32, #8B4513);"></span>
+                </div>
+                <div class="product-sizes">
+                    <button class="size-btn">XS</button>
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                    <button class="size-btn">XL</button>
+                </div>
+                <div class="product-price">
+                    <span class="price">R2,049</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 6 -->
+        <div class="product-card" data-category="casual" data-price="94.99">
+            <div class="product-image">
+                <i class="fas fa-vest product-icon"></i>
+                <div class="product-overlay">
+                    <button class="quick-view"><i class="fas fa-eye"></i> Quick View</button>
+                    <button class="add-to-cart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+                <span class="product-badge new">New</span>
+            </div>
+            <div class="product-info">
+                <h3>Mesh Fusion</h3>
+                <p>Contemporary mesh bodysuit with cutouts</p>
+                <div class="product-colors">
+                    <span class="color-swatch" style="background: #000000;"></span>
+                    <span class="color-swatch" style="background: #FFFFFF; border-color: #d4af37;"></span>
+                    <span class="color-swatch" style="background: #FF1493;"></span>
+                </div>
+                <div class="product-sizes">
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                    <button class="size-btn">XL</button>
+                </div>
+                <div class="product-price">
+                    <span class="price">R1,379</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 7 -->
+        <div class="product-card" data-category="sport" data-price="79.99">
+            <div class="product-image">
+                <i class="fas fa-running product-icon"></i>
+                <div class="product-overlay">
+                    <button class="quick-view"><i class="fas fa-eye"></i> Quick View</button>
+                    <button class="add-to-cart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3>Active Spirit</h3>
+                <p>Performance bodysuit with moisture-wicking</p>
+                <div class="product-colors">
+                    <span class="color-swatch" style="background: #000000;"></span>
+                    <span class="color-swatch" style="background: #4169E1;"></span>
+                    <span class="color-swatch" style="background: #DC143C;"></span>
+                </div>
+                <div class="product-sizes">
+                    <button class="size-btn">XS</button>
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                    <button class="size-btn">XL</button>
+                </div>
+                <div class="product-price">
+                    <span class="price">R1,149</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 8 -->
+        <div class="product-card" data-category="casual" data-price="84.99">
+            <div class="product-image">
+                <i class="fas fa-tshirt product-icon"></i>
+                <div class="product-overlay">
+                    <button class="quick-view"><i class="fas fa-eye"></i> Quick View</button>
+                    <button class="add-to-cart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3>Cotton Comfort</h3>
+                <p>Soft cotton blend for everyday wear</p>
+                <div class="product-colors">
+                    <span class="color-swatch" style="background: #FFFFFF; border-color: #d4af37;"></span>
+                    <span class="color-swatch" style="background: #F5F5DC;"></span>
+                    <span class="color-swatch" style="background: #708090;"></span>
+                </div>
+                <div class="product-sizes">
+                    <button class="size-btn">XS</button>
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                    <button class="size-btn">XL</button>
+                </div>
+                <div class="product-price">
+                    <span class="price">R1,229</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 9 -->
+        <div class="product-card" data-category="luxury" data-price="159.99">
+            <div class="product-image">
+                <i class="fas fa-gem product-icon"></i>
+                <div class="product-overlay">
+                    <button class="quick-view"><i class="fas fa-eye"></i> Quick View</button>
+                    <button class="add-to-cart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+                <span class="product-badge limited">Limited</span>
+            </div>
+            <div class="product-info">
+                <h3>Crystal Cascade</h3>
+                <p>Embellished with Swarovski crystals</p>
+                <div class="product-colors">
+                    <span class="color-swatch" style="background: #000000;"></span>
+                    <span class="color-swatch" style="background: linear-gradient(135deg, #E6E6FA, #D8BFD8);"></span>
+                </div>
+                <div class="product-sizes">
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                </div>
+                <div class="product-price">
+                    <span class="price">R2,349</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 10 -->
+        <div class="product-card" data-category="evening" data-price="119.99">
+            <div class="product-image">
+                <i class="fas fa-user-tie product-icon"></i>
+                <div class="product-overlay">
+                    <button class="quick-view"><i class="fas fa-eye"></i> Quick View</button>
+                    <button class="add-to-cart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+                <span class="product-badge bestseller">Bestseller</span>
+            </div>
+            <div class="product-info">
+                <h3>Sequin Sensation</h3>
+                <p>All-over sequins for maximum glamour</p>
+                <div class="product-colors">
+                    <span class="color-swatch" style="background: linear-gradient(135deg, #FFD700, #FFA500);"></span>
+                    <span class="color-swatch" style="background: linear-gradient(135deg, #C0C0C0, #E8E8E8);"></span>
+                    <span class="color-swatch" style="background: #000000;"></span>
+                </div>
+                <div class="product-sizes">
+                    <button class="size-btn">XS</button>
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                </div>
+                <div class="product-price">
+                    <span class="price">R1,749</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 11 -->
+        <div class="product-card" data-category="casual" data-price="74.99">
+            <div class="product-image">
+                <i class="fas fa-tshirt product-icon"></i>
+                <div class="product-overlay">
+                    <button class="quick-view"><i class="fas fa-eye"></i> Quick View</button>
+                    <button class="add-to-cart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3>Essential Basics</h3>
+                <p>Timeless design for everyday elegance</p>
+                <div class="product-colors">
+                    <span class="color-swatch" style="background: #000000;"></span>
+                    <span class="color-swatch" style="background: #FFFFFF; border-color: #d4af37;"></span>
+                    <span class="color-swatch" style="background: #696969;"></span>
+                    <span class="color-swatch" style="background: #D2691E;"></span>
+                </div>
+                <div class="product-sizes">
+                    <button class="size-btn">XS</button>
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                    <button class="size-btn">XL</button>
+                </div>
+                <div class="product-price">
+                    <span class="price">R1,079</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 12 -->
+        <div class="product-card" data-category="sport" data-price="89.99">
+            <div class="product-image">
+                <i class="fas fa-running product-icon"></i>
+                <div class="product-overlay">
+                    <button class="quick-view"><i class="fas fa-eye"></i> Quick View</button>
+                    <button class="add-to-cart"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+                </div>
+                <span class="product-badge new">New</span>
+            </div>
+            <div class="product-info">
+                <h3>Power Flex</h3>
+                <p>High-compression bodysuit for workouts</p>
+                <div class="product-colors">
+                    <span class="color-swatch" style="background: #000000;"></span>
+                    <span class="color-swatch" style="background: #8A2BE2;"></span>
+                    <span class="color-swatch" style="background: #00CED1;"></span>
+                </div>
+                <div class="product-sizes">
+                    <button class="size-btn">XS</button>
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                    <button class="size-btn">XL</button>
+                </div>
+                <div class="product-price">
+                    <span class="price">$89.99</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-logo">
+                    <i class="fas fa-gem"></i>
+                    <span>Body Parlor</span>
+                </div>
+                <p>Elevating your style, one bodysuit at a time. Experience fashion that celebrates your unique beauty.</p>
+                <div class="newsletter">
+                    <h4>Join Our Style Community</h4>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Enter your email">
+                        <button type="submit"><i class="fas fa-arrow-right"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#about">About Us</a></li>
+                    <li><a href="products.html">Shop</a></li>
+                    <li><a href="index.html#gallery">Gallery</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Customer Care</h3>
+                <ul>
+                    <li><a href="#">Size Guide</a></li>
+                    <li><a href="#">Shipping & Returns</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Gift Cards</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Accessibility</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Body Parlor. All rights reserved. Crafted with <i class="fas fa-heart"></i> for those who dare to shine.</p>
+            <div class="payment-icons">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-amex"></i>
+                <i class="fab fa-cc-paypal"></i>
+                <i class="fab fa-cc-apple-pay"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Shopping Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2><i class="fas fa-shopping-bag"></i> Your Cart</h2>
+            <button class="cart-close" id="cartClose">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be dynamically added here -->
+        </div>
+        <div class="cart-empty" id="cartEmpty">
+            <i class="fas fa-shopping-bag"></i>
+            <p>Your cart is empty</p>
+            <a href="#products" class="btn btn-primary">Start Shopping</a>
+        </div>
+        <div class="cart-footer" id="cartFooter">
+            <div class="cart-total">
+                <span>Subtotal:</span>
+                <span id="cartTotal">R0</span>
+            </div>
+            <button class="btn btn-primary btn-whatsapp" id="whatsappCheckout">
+                <i class="fab fa-whatsapp"></i>
+                <span>Checkout via WhatsApp</span>
+            </button>
+            <button class="btn btn-secondary" id="clearCart">
+                <i class="fas fa-trash"></i>
+                <span>Clear Cart</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <script src="script.js"></script>
+    <script>
+        // Filter functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const productCards = document.querySelectorAll('.product-card');
+        const resultsCount = document.getElementById('resultsCount');
+        const sortSelect = document.getElementById('sortSelect');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const filter = btn.dataset.filter;
+                let visibleCount = 0;
+
+                productCards.forEach(card => {
+                    if (filter === 'all' || card.dataset.category === filter) {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                resultsCount.textContent = visibleCount;
+            });
+        });
+
+        // Sort functionality
+        sortSelect.addEventListener('change', (e) => {
+            const sortType = e.target.value;
+            const grid = document.getElementById('productsGrid');
+            const cardsArray = Array.from(productCards);
+
+            cardsArray.sort((a, b) => {
+                if (sortType === 'price-low') {
+                    return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+                } else if (sortType === 'price-high') {
+                    return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+                }
+                return 0;
+            });
+
+            cardsArray.forEach(card => grid.appendChild(card));
+        });
+    </script>
+</body>
+</html>
