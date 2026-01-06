@@ -73,6 +73,75 @@ document.querySelectorAll('[data-scroll]').forEach(el => {
 });
 
 // ============================================
+// QUICK VIEW FUNCTIONALITY
+// ============================================
+const quickViewModal = document.getElementById('quickViewModal');
+const quickViewOverlay = document.getElementById('quickViewOverlay');
+const quickViewClose = document.getElementById('quickViewClose');
+const quickViewClose2 = document.getElementById('quickViewClose2');
+const quickViewName = document.getElementById('quickViewName');
+const quickViewDescription = document.getElementById('quickViewDescription');
+const quickViewPrice = document.getElementById('quickViewPrice');
+const quickViewIcon = document.getElementById('quickViewIcon');
+const quickViewAddToCart = document.getElementById('quickViewAddToCart');
+let currentQuickViewProduct = null;
+
+// Size selection functionality
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('size-option')) {
+        document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('selected'));
+        e.target.classList.add('selected');
+    }
+});
+
+// Open Quick View
+function openQuickView(productData) {
+    currentQuickViewProduct = productData;
+    quickViewName.textContent = productData.name;
+    quickViewDescription.textContent = productData.description;
+    quickViewPrice.textContent = productData.price;
+    
+    // Update image instead of icon
+    if (productData.image) {
+        quickViewIcon.innerHTML = `<img src="${productData.image}" alt="${productData.alt}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">`;
+    } else {
+        quickViewIcon.innerHTML = '<i class="fas fa-tshirt"></i>';
+    }
+    
+    quickViewModal.classList.add('active');
+    quickViewOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Close Quick View
+function closeQuickView() {
+    quickViewModal.classList.remove('active');
+    quickViewOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+    currentQuickViewProduct = null;
+}
+
+// Quick View event listeners
+if (quickViewClose) quickViewClose.addEventListener('click', closeQuickView);
+if (quickViewClose2) quickViewClose2.addEventListener('click', closeQuickView);
+if (quickViewOverlay) quickViewOverlay.addEventListener('click', closeQuickView);
+
+// Quick View Add to Cart
+if (quickViewAddToCart) {
+    quickViewAddToCart.addEventListener('click', () => {
+        if (currentQuickViewProduct) {
+            const selectedSize = document.querySelector('.size-option.selected').dataset.size;
+            const product = {
+                ...currentQuickViewProduct,
+                size: selectedSize
+            };
+            addToCart(product);
+            closeQuickView();
+        }
+    });
+}
+
+// ============================================
 // SHOPPING CART FUNCTIONALITY
 // ============================================
 let cart = JSON.parse(localStorage.getItem('bodyParlorCart')) || [];
@@ -112,7 +181,7 @@ function renderCartItems() {
     cartItems.innerHTML = cart.map((item, index) => `
         <div class="cart-item">
             <div class="cart-item-icon">
-                <i class="fas ${item.icon}"></i>
+                ${item.image ? `<img src="${item.image}" alt="${item.alt || item.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">` : '<i class="fas fa-tshirt"></i>'}
             </div>
             <div class="cart-item-details">
                 <div class="cart-item-name">${item.name}</div>
@@ -261,7 +330,19 @@ productCards.forEach(card => {
         quickViewBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             const productName = card.querySelector('h3').textContent;
-            showNotification(`Viewing ${productName}`, 'info');
+            const productDescription = card.querySelector('p').textContent;
+            const productPrice = card.querySelector('.price').textContent;
+            const productImg = card.querySelector('.product-img');
+            
+            const productData = {
+                name: productName,
+                description: productDescription,
+                price: productPrice,
+                image: productImg ? productImg.src : '',
+                alt: productImg ? productImg.alt : productName
+            };
+            
+            openQuickView(productData);
         });
     }
 
@@ -273,14 +354,15 @@ productCards.forEach(card => {
             
             const productName = card.querySelector('h3').textContent;
             const productPrice = card.querySelector('.price').textContent;
-            const productIcon = card.querySelector('.product-icon').className.split(' ')[1];
+            const productImg = card.querySelector('.product-img');
             
             // Default size M if no size selected
             const product = {
                 name: productName,
                 price: productPrice,
                 size: 'M',
-                icon: productIcon
+                image: productImg ? productImg.src : '',
+                alt: productImg ? productImg.alt : productName
             };
             
             addToCart(product);
