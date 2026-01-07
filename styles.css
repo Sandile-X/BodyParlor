@@ -1462,19 +1462,25 @@ section {
 @media (max-width: 768px) {
     .quick-view-modal {
         padding: 1rem;
+        align-items: flex-start;
+        padding-top: 2rem;
     }
     
     .quick-view-content {
         max-width: 95%;
         margin: 0;
-        max-height: 90vh;
-        overflow-y: auto;
+        max-height: 85vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
     
     .quick-view-product {
         flex-direction: column;
         padding: 1.5rem;
         gap: 1.5rem;
+        overflow-y: auto;
+        flex: 1;
     }
     
     .quick-view-icon {

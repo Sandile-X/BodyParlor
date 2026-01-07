@@ -1,0 +1,95 @@
+/* ============================================
+   MOBILE QUICK VIEW FIXES
+   ============================================ */
+@media (max-width: 480px) {
+    /* Quick View Mobile Overrides */
+    .quick-view-modal {
+        padding: 0.5rem !important;
+        align-items: flex-start !important;
+        padding-top: 1rem !important;
+    }
+    
+    .quick-view-content {
+        max-width: 100% !important;
+        width: calc(100vw - 1rem) !important;
+        margin: 0 !important;
+        border-radius: var(--radius-md) !important;
+        max-height: 90vh !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        position: relative !important;
+    }
+    
+    .quick-view-product {
+        padding: 1rem 1rem 0.5rem !important;
+        gap: 1rem !important;
+        overflow-y: auto !important;
+        flex: 1 !important;
+        padding-bottom: 4rem !important;
+        flex-direction: column !important;
+    }
+    
+    .quick-view-icon {
+        width: 100% !important;
+        height: 180px !important;
+        flex-shrink: 0 !important;
+        align-self: center !important;
+    }
+    
+    .quick-view-details h2 {
+        font-size: 1.2rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .quick-view-details p {
+        font-size: 0.85rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    .quick-view-price {
+        font-size: 1.2rem !important;
+        margin: 0.8rem 0 !important;
+    }
+    
+    .quick-view-sizes {
+        margin: 0.8rem 0 !important;
+    }
+    
+    .size-option {
+        min-width: 40px !important;
+        padding: 0.5rem 0.7rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .quick-view-actions {
+        position: sticky !important;
+        bottom: 0 !important;
+        background: var(--surface) !important;
+        padding: 1rem !important;
+        margin: 0 -1rem -0.5rem !important;
+        border-top: 1px solid var(--border) !important;
+        gap: 0.8rem !important;
+        flex-direction: column !important;
+    }
+    
+    .quick-view-actions .btn {
+        padding: 0.8rem 1rem !important;
+        font-size: 0.85rem !important;
+        flex: 1 !important;
+    }
+    
+    .quick-view-close {
+        position: fixed !important;
+        top: calc(1rem + 10px) !important;
+        right: calc(0.5rem + 10px) !important;
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 1.1rem !important;
+        z-index: 11001 !important;
+        background: rgba(0, 0, 0, 0.8) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 50% !important;
+    }
+}
