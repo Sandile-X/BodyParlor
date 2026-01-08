@@ -1621,8 +1621,9 @@ section {
 .cart-sidebar {
     position: fixed;
     top: 0;
-    right: -450px;
-    width: 450px;
+    right: -100%;
+    width: 100%;
+    max-width: 450px;
     height: 100vh;
     background: var(--surface);
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.5);
@@ -1630,6 +1631,7 @@ section {
     transition: right var(--transition-base);
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
 }
 
 .cart-sidebar.active {
@@ -1678,6 +1680,7 @@ section {
 
 .cart-item {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
     padding: 1.5rem;
     background: rgba(255, 255, 255, 0.03);
@@ -1685,6 +1688,9 @@ section {
     margin-bottom: 1rem;
     border: 1px solid var(--border);
     transition: var(--transition-base);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .cart-item:hover {
@@ -1733,8 +1739,10 @@ section {
 .cart-item-controls {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 0.75rem;
     margin-top: 0.5rem;
+    width: 100%;
 }
 
 .quantity-btn {
@@ -1770,6 +1778,9 @@ section {
     border-radius: var(--radius-sm);
     font-size: 0.85rem;
     transition: var(--transition-base);
+    white-space: nowrap;
+    max-width: 100%;
+    width: auto;
 }
 
 .remove-item:hover {
